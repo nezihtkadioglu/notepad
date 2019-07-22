@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  notepad:
+    build: .
+    volumes:
+      - './data:/home/notepad/data'
+      - '/tmp/.X11-unix:/tmp/.X11-unix'
+    environment:
+      - DISPLAY=$DISPLAY
