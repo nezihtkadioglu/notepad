@@ -1,6 +1,6 @@
 # Python Notepad
 
-A notepad app made to jot down notes. The objective is for it to use a personal Google Drive to store the written notes (in markdown), the local all through a graphical user interface.
+A notepad app made using python. The objective is for it to use a personal Google Drive to store the written notes (in markdown) and a "data" folder to store object information, all through a graphical user interface.
 
 Keywords: OOP, Python, Google Drive API, GUI, docker, docker-compose
 

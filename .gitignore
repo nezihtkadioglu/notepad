@@ -1,0 +1,5 @@
+# exclude data folder content
+data/*
+
+# keep folder
+!data/.gitkeep
