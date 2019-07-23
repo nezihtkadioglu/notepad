@@ -1,5 +1,6 @@
 # exclude data folder content
 data/*
+source/__pycache__
 
 # keep folder
 !data/.gitkeep

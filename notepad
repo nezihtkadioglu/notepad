@@ -1,7 +1,7 @@
 #! /bin/bash
 
-if [[ "$docker images -q notepad_notepad 2> /dev/null" == "" ]]; then
-  docker-compose build 
+if [[ "$docker images -q notepad_app 2> /dev/null" == "" ]]; then
+  docker-compose build
 fi
 
 docker-compose up

@@ -1,10 +1,11 @@
 version: '2'
 
 services:
-  notepad:
+  app:
     build: .
     volumes:
       - './data:/home/notepad/data'
+      - './source:/home/notepad/source'
       - '/tmp/.X11-unix:/tmp/.X11-unix'
     environment:
       - DISPLAY=$DISPLAY

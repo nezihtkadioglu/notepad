@@ -1,3 +1,3 @@
 #! /bin/bash
 
-python interface.py
+python source/interface.py
