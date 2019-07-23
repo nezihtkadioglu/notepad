@@ -22,3 +22,6 @@ class Note:
   def delete(self):
     delete_local()
     delete_md()
+
+  def entry_text(self):
+    return "#{}: {}".format(self.id, self.title)
