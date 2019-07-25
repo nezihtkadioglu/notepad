@@ -3,14 +3,19 @@ from tkinter.ttk import *
 from ttkthemes import ThemedTk
 from models import *
 import os
+from PIL import ImageTk, Image
 
 class Gui(ThemedTk):
     def __init__(self):
         ThemedTk.__init__(self, theme = 'arc')
-        self.geometry('1024x768')
-        self.title('Notepad')
-        self.padding = 5
 
+        # Window styling
+        self.geometry('1024x768')
+        img = ImageTk.PhotoImage(Image.open('source/notepad.ico'))
+        self.tk.call('wm', 'iconphoto', self._w, img)
+        self.tk.call('wm', 'title', self._w, 'Notepad')
+
+        self.padding = 5
         self._frame = None
         self.switch_frame(IndexPage)
 
@@ -72,7 +77,11 @@ class IndexPage(Frame):
 class NoteFormPage(Frame):
     def __init__(self, master, note = None):
         Frame.__init__(self, master)
-        Title = StringVar()
+
+        if note:
+            Title = StringVar(value = note.title)
+        else:
+            Title = StringVar()
 
         # Title
         title_frame = Frame(self)
@@ -100,6 +109,8 @@ class NoteFormPage(Frame):
         description_field_frame = Frame(description_frame)
         description_field_frame.pack(fill = X, padx = master.padding)
         description_field = Text(description_field_frame)
+        if note:
+            description_field.insert('1.0', note.description)
         description_field.pack(fill = X)
 
         # Actions
@@ -109,7 +120,7 @@ class NoteFormPage(Frame):
         back_button = Button(actions_frame, text = 'Back', command = lambda: master.switch_frame(IndexPage))
         back_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
 
-        save_button = Button(actions_frame, text = "Save", command = lambda: save_note(Title.get(), description_field.get('1.0', 'end-1c')) )
+        save_button = Button(actions_frame, text = "Save", command = lambda: save_note(Title.get(), description_field.get('1.0', 'end-1c'), note) )
         save_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
 
 class NoteShowPage(Frame):
@@ -168,10 +179,17 @@ class NoteShowPage(Frame):
 
         back_button = Button(actions_frame, text = 'Back', command = lambda: master.switch_frame(IndexPage))
         back_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
+        edit_button = Button(actions_frame, text = 'Edit', command = lambda: master.switch_frame(NoteFormPage, note))
+        edit_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
 
-def save_note(title, description):
-    new_note = Note({ 'title': title, 'description': description })
-    new_note.save()
+def save_note(title, description, note = None):
+    if note:
+        note.title = title
+        note.description = description
+        note.save()
+    else:
+        new_note = Note({ 'title': title, 'description': description })
+        new_note.save()
 
 def main():
     prog = Gui()
