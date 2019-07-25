@@ -15,6 +15,13 @@ class Gui(ThemedTk):
         self.tk.call('wm', 'iconphoto', self._w, img)
         self.tk.call('wm', 'title', self._w, 'Notepad')
 
+        # Custom Styles
+        Style().configure('green.TButton', background = 'green', higlightbackground = 'green', foreground = 'green')
+        Style().configure('orange.TButton', background = 'orange', higlightbackground = 'orange', foreground = 'orange')
+        Style().configure('red.TButton', background = 'red', higlightbackground = 'red', foreground = 'red')
+        Style().configure('yellow.TButton', background = 'yellow', higlightbackground = 'yellow')
+
+
         self.padding = 5
         self._frame = None
         self.switch_frame(IndexPage)
@@ -47,7 +54,7 @@ class IndexPage(Frame):
 
         create_button_frame = Frame(frame)
         create_button_frame.pack(fill = X, padx = master.padding, pady = master.padding)
-        create_button = Button(create_button_frame, text = 'New note', command = lambda: master.switch_frame(NoteFormPage), width = 10)
+        create_button = Button(create_button_frame, style = 'green.TButton', text = 'New note', command = lambda: master.switch_frame(NoteFormPage), width = 10)
         create_button.pack(side = RIGHT)
 
         objects_frame = Frame(frame)
@@ -61,8 +68,6 @@ class IndexPage(Frame):
         actions_frame = Frame(self)
         actions_frame.pack(fill = X, anchor = S, pady = master.padding)
 
-        exit_button = Button(actions_frame, text = 'Exit', command = self.quit)
-        exit_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
         view_button = Button(actions_frame, text = 'View note', command = lambda: self.view_note(master))
         view_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
 
@@ -117,10 +122,10 @@ class NoteFormPage(Frame):
         actions_frame = Frame(self)
         actions_frame.pack(fill = X, anchor = S, pady = master.padding)
 
-        back_button = Button(actions_frame, text = 'Back', command = lambda: master.switch_frame(IndexPage))
-        back_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
+        back_button = Button(actions_frame, text = 'Back', style = 'yellow.TButton', command = lambda: master.switch_frame(IndexPage))
+        back_button.pack(side = LEFT, padx = master.padding, pady = master.padding)
 
-        save_button = Button(actions_frame, text = "Save", command = lambda: save_note(Title.get(), description_field.get('1.0', 'end-1c'), note) )
+        save_button = Button(actions_frame, text = "Save", style = 'green.TButton', command = lambda: save_note(Title.get(), description_field.get('1.0', 'end-1c'), master, note) )
         save_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
 
 class NoteShowPage(Frame):
@@ -177,19 +182,26 @@ class NoteShowPage(Frame):
         actions_frame = Frame(self)
         actions_frame.pack(fill = X, anchor = S, pady = master.padding)
 
-        back_button = Button(actions_frame, text = 'Back', command = lambda: master.switch_frame(IndexPage))
-        back_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
-        edit_button = Button(actions_frame, text = 'Edit', command = lambda: master.switch_frame(NoteFormPage, note))
-        edit_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
+        back_button = Button(actions_frame, text = 'Back', style = 'yellow.TButton', command = lambda: master.switch_frame(IndexPage))
+        back_button.pack(side = LEFT, padx = master.padding, pady = master.padding)
 
-def save_note(title, description, note = None):
-    if note:
-        note.title = title
-        note.description = description
-        note.save()
+        edit_button = Button(actions_frame, text = 'Edit', style = 'orange.TButton', command = lambda: master.switch_frame(NoteFormPage, note))
+        delete_button = Button(actions_frame, text = 'Delete', style = 'red.TButton', command = lambda: delete_note(note, master))
+        edit_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
+        delete_button.pack(side = RIGHT, padx = master.padding, pady = master.padding)
+
+def save_note(title, description, master, e_note = None):
+    if e_note:
+        note = e_note
+        note.update({ 'title': title, 'description': description })
     else:
-        new_note = Note({ 'title': title, 'description': description })
-        new_note.save()
+        note = Note({ 'title': title, 'description': description })
+    note.save()
+    master.switch_frame(NoteShowPage, note)
+
+def delete_note(note, master):
+    note.delete()
+    master.switch_frame(IndexPage)
 
 def main():
     prog = Gui()

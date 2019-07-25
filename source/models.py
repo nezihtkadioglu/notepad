@@ -17,17 +17,26 @@ class Note:
         else:
             self.date = date.today().strftime("%d/%m/%Y")
 
+    def update(self, params):
+        if type(params) != dict:
+            raise 'update parameters should be given in a dictionary'
+        for attribute in params.keys():
+            if attribute in self.__dict__.keys():
+                setattr(self, attribute, params[attribute])
+
     def save(self):
         self.save_json()
         # save_md()
 
+    def delete(self):
+        self.delete_json()
+
+    def delete_json(self):
+        os.remove('./data/' + str(self.id) + '.json')
+
     def save_json(self):
         with open('./data/'+ str(self.id) + '.json', 'w+') as f:
             json.dump(self.__dict__, f, indent = 2)
-
-    def delete(self):
-        delete_local()
-        delete_md()
 
     def entry_text(self):
         return "#{}: {}".format(str(self.id), self.title)
